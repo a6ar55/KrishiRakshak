@@ -1,0 +1,122 @@
+# Configuration file for Plant Disease Segmentation System
+
+# Model Configuration
+model:
+  name: "enet"
+  num_classes: 3  # Background, Healthy_Leaf, Diseased_Area
+  encoder_relu: false
+  decoder_relu: true
+
+# Data Configuration
+data:
+  data_dir: "data/disease_segmentation"
+  image_size: [256, 256]
+  batch_size: 4
+  num_workers: 4
+  normalize: true
+  pin_memory: true
+  
+  # Data augmentation for training
+  augmentation:
+    horizontal_flip: 0.5
+    vertical_flip: 0.3
+    rotate90: 0.5
+    shift_scale_rotate:
+      shift_limit: 0.1
+      scale_limit: 0.1
+      rotate_limit: 15
+      p: 0.5
+    brightness_contrast:
+      brightness_limit: 0.2
+      contrast_limit: 0.2
+      p: 0.5
+    hue_saturation:
+      hue_shift_limit: 10
+      sat_shift_limit: 20
+      val_shift_limit: 10
+      p: 0.3
+    gaussian_blur:
+      blur_limit: 3
+      p: 0.2
+
+# Training Configuration
+training:
+  epochs: 100
+  learning_rate: 0.001
+  weight_decay: 1e-4
+  optimizer: "adam"
+  scheduler: "cosine"
+  
+  # Loss function weights
+  loss:
+    type: "combined"  # "ce", "dice", "focal", "combined"
+    weights:
+      ce: 0.5
+      dice: 0.3
+      focal: 0.2
+    focal_params:
+      alpha: 1.0
+      gamma: 2.0
+  
+  # Early stopping
+  early_stopping:
+    patience: 15
+    min_delta: 0.001
+    monitor: "val_iou"
+    mode: "max"
+  
+  # Gradient clipping
+  grad_clip: 1.0
+  
+  # Mixed precision training
+  use_amp: false
+
+# Validation Configuration
+validation:
+  frequency: 1  # Validate every N epochs
+  save_best: true
+  metric: "mean_iou"  # Metric to use for best model selection
+
+# Logging Configuration
+logging:
+  log_dir: "logs"
+  tensorboard: true
+  save_frequency: 10  # Save model every N epochs
+  
+# Checkpoint Configuration
+checkpoint:
+  save_dir: "checkpoints"
+  resume_from: null  # Path to checkpoint to resume from
+  save_top_k: 3  # Keep top K checkpoints
+
+# Hardware Configuration
+hardware:
+  device: "cpu"  # "cuda", "cpu", or "auto"
+  multi_gpu: false
+  
+# Inference Configuration
+inference:
+  batch_size: 1
+  output_dir: "results"
+  visualize: true
+  save_predictions: true
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - "iou"
+    - "dice"
+    - "pixel_accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+  
+  # Threshold for binary classification (if using sigmoid output)
+  threshold: 0.5
+  
+# System Configuration
+system:
+  seed: 42
+  deterministic: true
+  benchmark: true  # Enable cudnn benchmark for faster training
+
