@@ -1,0 +1,13 @@
+Bacterial Spot Label Generation Summary
+==================================================
+
+Total label files created: 156
+Total pixels: 156,000,000
+Background pixels (0): 138,929,097 (89.06%)
+Diseased pixels (255): 17,070,903 (10.94%)
+
+Label Format:
+- Background/Healthy: 0 (black)
+- Diseased/Bacteria: 255 (white)
+
+Files created with "_label.png" suffix in: Bacterial_labels
